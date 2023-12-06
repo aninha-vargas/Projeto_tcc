@@ -1,0 +1,168 @@
+anotações trabalho:
+
+rodar back: php artisan serve --port=9000
+rodar front / node: npm run dev
+Rabbit: https://customer.cloudamqp.com/login
+usuario: faculdade.anavargas@gmail.com / Feliz212*
+
+Antes de Rodar, Ajustar arquivo:
+node\src\models\ConnectionDB.ts confg BD
+rodar: npm run dev
+
+ticket-api-laravel\.env senha BD
+rodar: php artisan serve --port=9000
+
+rodar front
+npm start
+
+Tirado fora:
+1) tratativas UF
+2) abertura_chamado (pedido)
+3) Templates / possui template (cat e su)
+4) Agendamento (pedido, cat e sub)
+5) funcionario com troca de setor
+6) Classificacao (pedido, cat e sub)
+7) ativo (adicionais)
+7) Soft delete (info_adicionais)
+7) Tipo_mensagem (mensagem, tipo_mensagem)
+8) abertura_area (pedido)
+9) pendente, reaberto, recategorizar (status, mensagem)
+10) ultima interacao (pedido)
+11) pausas (mensagem)
+12) histórico publico (historico)
+13) setores_tb -> areas
+14) Campos adicionais
+15) Nota Gestor
+16) Avaliação Util
+
+Retirado: 
+Envio de email *pendente
+
+
+Mudança - tab permissoes:
+id_usuario para usuario_id
+id_setor para area_id
+
+Relacinamentos Usuario
+Ajustar Class User->Usuario
+
+
+try {
+	DB::beginTransaction();
+
+	DB::commit();
+	return array(
+		'status' 	=> true,
+		'mensagem' 	=> "Usuário cadastrado com sucesso.",
+		'dados' 	=>  $dados
+	);
+
+} catch (Exception $ex) {
+	DB::rollBack();
+	return array(
+		'status' 	=> false,
+		'mensagem' 	=> "Erro ao cadastrar usuário.",
+		'exception' => $ex->getMessage()
+	);
+}
+
+
+Rotas Catalogo:
+Carregar categorias: 
+
+Assunto:
+GET 	http://localhost:8000/api/assunto/setor/16
+N_GET 	http://localhost:8000/api/assunto/ - OK
+POST	http://localhost:8000/api/assunto/ - OK
+PUT	http://localhost:8000/api/assunto/154 - OK
+
+Categoria:
+GET 	http://localhost:8000/api/assunto/151/categorias* (com sub)
+POST	http://localhost:8000/api/categoria/ - OK
+PUT	http://localhost:8000/api/categoria/845 - OK
+
+Sub:
+POST	http://localhost:8000/api/sub_categoria/ - OK
+PUT	http://localhost:8000/api/sub_categoria/1417 - OK
+
+usuario_id (obter) - OK
+rota de editar grupo esta removendo os integrantes que estao no grupo (passando apenas o titulo como parametro) OK
+rota para retornar assuntos por ID - rota: GET | http://127.0.0.1:9000/api/assunto/6/categorias OK
+rota para retornar as informações de uma subcategoria por id subcategoria  OK
+
+Rota de Categoria
+buscar: http://localhost:9000/api/categoria/{categoria_id} - OK
+
+Novo Pedido:
+Listar Area: http://127.0.0.1:9000/api/area/ OK
+Listar assuntos ativos: http://127.0.0.1:9000/api/area/{area_id}/assuntoAtivo OK
+Listar categorias ativas: http://127.0.0.1:9000/api/assunto/{assunto_id}/categoriasAtivas OK
+Cadastrar Pedido: POST http://127.0.0.1:9000/api/pedido OK *arquivos salvo: storage/app/uploads
+
+Interação e Iniciar Atendimento:
+Cadastrar mensagem: 		POST    api/pedido/{pedido_id}/mensagem/cadastrar OK
+Consultar pedido:			GET		api/pedido/{pedido_id}	OK   
+Iniciar atendimento: 		PATCH   api/pedido/{pedido_id}/iniciar-atendimento OK   
+*Baixar anexo: 				GET 	api/pedido/mensagem/{mensagem_id}/anexo/{anexo_id}/baixar	OK   validar com o front
+
+Cancelar / Finalizar / Avaliar atendimento:
+Cancelar: 					PATCH	api/pedido/{pedido_id}/alterar-status OK
+Avaliar: 					POST	api/pedido/{pedido_id}/avaliacao OK
+alterar status após ava		**rota que grava avaliação, ja altera status OK
+
+Listagem / Historico / Email:
+Histórico:			GET		api/pedido/{pedido_id}/historico    OK
+Filtros:
+	Status: 		GET		api/status/   	OK
+	Prioridades:	GET		api/prioridade  OK
+	Resp/Solic:		GET		api/pedido/filtrar/{tipo_id}   tipo_id = 1 - Responsáveis / tipo_id = 2 - Solicitantes 	OK
+	Areas:			GET		api/area/		OK
+
+Listar pedidos:		POST	api/pedido/listar-pedidos/ payload {status_id, prioridade_id, responsavel_id, solicitante_id, area_id, tipo: "minhas" / "atendimentos" / "area"} OK
+Email
+
+************************************************************
+@SAMUEL dar o pull e rodar o comando, no projeto Laravel: OK
+php artisan migrate
+************************************************************
+
+
+### Retornar nome do responsavel na rota: api/grupo/listar/12 OK
+
+SAMUEL
+Ajustado retorno de responsável ou grupo nas rotas:
+	api/categoria/{id}
+	api/sub_categoria/{id}
+
+Criada Rota Atribuir responsavel (interagir e inicar pedido)
+	PATCH 		api/pedido/{pedido_id}/atribuir payload {"responsavel_id"}
+
+
+####
+	Verificar se o usuario esta logado para ter acesso as páginas
+	adicionar alerts personalizados
+	melhorar o design das paginas
+####
+
+meus atendimentos mudar responsavel por solicitante
+
+revisar documentação, verificar se diz algo sobre enviar mais de um anexo ao cadastrar
+pedido, se caso tiver, mudar para enviar apenas um anexo, ou uma pasta compactada.
+
+
+###
+Buscar Historico ----->  /api/pedido/*ID*/historico - esta rota esta retornando o id do usuario, preciso que retorne o nome dele
+
+
+
+minhas solicitações = cancelar / enviar mensagens OK
+
+solicitações da area = se o usuario logado nao tiver vinculo com o chamado, sera possivel apenas visualizar. Porem se for gestor, pode interagir com tudo
+
+
+Configuração de email:
+	.env
+		ver no whats confgs
+		
+	rodar comando: composer install
+	
