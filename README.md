@@ -8,7 +8,7 @@ Configurar BD: node\src\models\ConnectionDB.ts
 
 ### API - Laravel
 recebe do serviço de mensageria o cadastro do usuario
-<br> consulta feriados nacionais na API: https://brasilapi.com.br/api/feriados/v1/2023
+consulta feriados nacionais na API: https://brasilapi.com.br/api/feriados/v1/2023
 realiza a gestão de envio de email atraves da plataforma MailGun
 Configurar arquivo .env - banco de dados e acessos externos
 ###### instalar dependencias: composer install
